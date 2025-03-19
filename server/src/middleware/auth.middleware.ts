@@ -20,6 +20,7 @@ export const authenticateToken = (
     req.user = {
       userId: payload.userId,
     };
+    next();
   } catch (error) {
     res.status(status.FORBIDDEN).json({
       error: 'Invalid or expired token',

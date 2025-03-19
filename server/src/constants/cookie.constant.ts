@@ -1,5 +1,5 @@
 const COOKIE_KEYS = {
-  refreshToken: 'refreshToken',
+    refreshToken: 'refreshToken',
 };
 
 export default COOKIE_KEYS;

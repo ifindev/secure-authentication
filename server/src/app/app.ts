@@ -1,6 +1,7 @@
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import express, { Express } from 'express';
+
 import { errorMiddleware } from '../middleware/error.middleware';
 import authRouter from '../routes/auth.route';
 import userRouter from '../routes/user.route';

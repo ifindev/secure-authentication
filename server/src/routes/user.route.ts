@@ -1,4 +1,5 @@
 import express from 'express';
+
 import UserController from '../controllers/user.controller';
 import { authenticateToken } from '../middleware/auth.middleware';
 

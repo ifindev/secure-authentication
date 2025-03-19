@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import status from 'http-status';
+
 import JWT from '../utils/jwt';
 
 export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {

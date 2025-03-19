@@ -1,28 +1,26 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import tseslint from 'typescript-eslint'
-
-export default tseslint.config(
-  { ignores: ['dist'] },
-  {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ['**/*.{ts,tsx}'],
-    languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
+export default [
+    {
+        ignores: ['node_modules', 'dist'], // ✅ Keep only necessary ignores
     },
-    plugins: {
-      'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
+    {
+        files: ['src/**/*.ts', 'src/**/*.tsx', 'server/**/*.ts'], // ✅ Ensure ESLint runs on these files
+        languageOptions: {
+            parser: (await import('@typescript-eslint/parser')).default,
+            sourceType: 'module',
+        },
+        plugins: {
+            '@typescript-eslint': (await import('@typescript-eslint/eslint-plugin')).default,
+            'simple-import-sort': (await import('eslint-plugin-simple-import-sort')).default,
+            'unused-imports': (await import('eslint-plugin-unused-imports')).default,
+            prettier: (await import('eslint-plugin-prettier')).default,
+        },
+        rules: {
+            '@typescript-eslint/no-unused-vars': 'off',
+            'no-unused-vars': 'off',
+            'prettier/prettier': 'error',
+            'simple-import-sort/exports': 'error',
+            'simple-import-sort/imports': 'error',
+            'unused-imports/no-unused-imports': 'error',
+        },
     },
-    rules: {
-      ...reactHooks.configs.recommended.rules,
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
-      ],
-    },
-  },
-)
+];

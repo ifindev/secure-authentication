@@ -1,6 +1,6 @@
 import { hashSync } from 'bcrypt';
 
-type User = {
+export type User = {
   id: string;
   username: string;
   password: string;
@@ -9,13 +9,13 @@ type User = {
   lastName: string;
 };
 
-type RefreshToken = {
+export type RefreshToken = {
   token: string;
   userId: string;
   expiresAt: Date;
 };
 
-export const users: User[] = [
+const users: User[] = [
   {
     id: '1',
     username: 'jdoe',
@@ -26,4 +26,11 @@ export const users: User[] = [
   },
 ];
 
-export const refreshTokens: RefreshToken[] = [];
+const refreshTokens: RefreshToken[] = [];
+
+const db = {
+  users,
+  refreshTokens,
+};
+
+export default db;

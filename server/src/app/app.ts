@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import express, { Express } from 'express';
 import { errorMiddleware } from '../middleware/error.middleware';
 import authRouter from '../routes/auth.route';
+import userRouter from '../routes/user.route';
 import configs from '../utils/configs';
 
 dotenv.config();
@@ -31,6 +32,7 @@ export default class App {
 
     private setupRoutes(): void {
         this.app.use('/api/auth', authRouter);
+        this.app.use('/api/users', userRouter);
     }
 
     public start(): void {

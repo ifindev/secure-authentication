@@ -8,34 +8,34 @@ import configs from '../utils/configs';
 dotenv.config();
 
 export default class App {
-  private app: Express;
-  private readonly PORT: number | string;
+    private app: Express;
+    private readonly PORT: number | string;
 
-  constructor() {
-    this.app = express();
-    this.PORT = configs.port;
+    constructor() {
+        this.app = express();
+        this.PORT = configs.port;
 
-    this.setupMiddlewares();
-    this.setupRoutes();
-    this.setupErrorHandler();
-  }
+        this.setupMiddlewares();
+        this.setupRoutes();
+        this.setupErrorHandler();
+    }
 
-  private setupMiddlewares(): void {
-    this.app.use(express.json());
-    this.app.use(cookieParser());
-  }
+    private setupMiddlewares(): void {
+        this.app.use(express.json());
+        this.app.use(cookieParser());
+    }
 
-  private setupErrorHandler(): void {
-    this.app.use(errorMiddleware);
-  }
+    private setupErrorHandler(): void {
+        this.app.use(errorMiddleware);
+    }
 
-  private setupRoutes(): void {
-    this.app.use('/api/auth', authRouter);
-  }
+    private setupRoutes(): void {
+        this.app.use('/api/auth', authRouter);
+    }
 
-  public start(): void {
-    this.app.listen(this.PORT, () => {
-      console.log(`Server running on port ${this.PORT}`);
-    });
-  }
+    public start(): void {
+        this.app.listen(this.PORT, () => {
+            console.log(`Server running on port ${this.PORT}`);
+        });
+    }
 }

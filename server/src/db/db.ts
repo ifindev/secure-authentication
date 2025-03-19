@@ -5,8 +5,8 @@ type User = {
   username: string;
   password: string;
   email: string;
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
 };
 
 type RefreshToken = {
@@ -21,8 +21,8 @@ export const users: User[] = [
     username: 'jdoe',
     password: hashSync('password', 10),
     email: 'jdoe@mail.com',
-    first_name: 'John',
-    last_name: 'Doe',
+    firstName: 'John',
+    lastName: 'Doe',
   },
 ];
 

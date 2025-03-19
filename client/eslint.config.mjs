@@ -3,7 +3,7 @@ export default [
         ignores: ['node_modules', 'dist'], // ✅ Keep only necessary ignores
     },
     {
-        files: ['src/**/*.ts', 'src/**/*.tsx', 'server/**/*.ts'], // ✅ Ensure ESLint runs on these files
+        files: ['src/**/*.ts', 'src/**/*.tsx'], // ✅ Ensure ESLint runs on these files
         languageOptions: {
             parser: (await import('@typescript-eslint/parser')).default,
             sourceType: 'module',
@@ -12,7 +12,6 @@ export default [
             '@typescript-eslint': (await import('@typescript-eslint/eslint-plugin')).default,
             'simple-import-sort': (await import('eslint-plugin-simple-import-sort')).default,
             'unused-imports': (await import('eslint-plugin-unused-imports')).default,
-            prettier: (await import('eslint-plugin-prettier')).default,
         },
         rules: {
             '@typescript-eslint/no-unused-vars': 'off',

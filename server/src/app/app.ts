@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import express, { Express } from 'express';
 
 import { errorMiddleware } from '../middleware/error.middleware';
+import { generalLimiter } from '../middleware/rate-limiter.middleware';
 import authRouter from '../routes/auth.route';
 import userRouter from '../routes/user.route';
 import configs from '../utils/configs';
@@ -25,6 +26,7 @@ export default class App {
     private setupMiddlewares(): void {
         this.app.use(express.json());
         this.app.use(cookieParser());
+        this.app.use(generalLimiter);
     }
 
     private setupErrorHandler(): void {

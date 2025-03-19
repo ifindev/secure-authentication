@@ -4,6 +4,9 @@ type User = {
   id: string;
   username: string;
   password: string;
+  email: string;
+  first_name: string;
+  last_name: string;
 };
 
 type RefreshToken = {
@@ -15,8 +18,11 @@ type RefreshToken = {
 export const users: User[] = [
   {
     id: '1',
-    username: 'user1',
-    password: hashSync('password1', 10),
+    username: 'jdoe',
+    password: hashSync('password', 10),
+    email: 'jdoe@mail.com',
+    first_name: 'John',
+    last_name: 'Doe',
   },
 ];
 

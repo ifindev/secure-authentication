@@ -9,12 +9,25 @@ export type UserProfile = {
 };
 
 export const getUserProfile = async (accessToken: string): Promise<UserProfile> => {
-    const response = await fetch(`${envConfig.apiUrl}/users/profile`, {
-        headers: {
-            Authorization: `Bearer ${accessToken}`,
-        },
-    });
+    try {
+        const response = await fetch(`${envConfig.apiUrl}/users/profile`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
 
-    if (!response.ok) throw new Error('Failed fetching user profile');
-    return (await response.json()) as UserProfile;
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Failed fetching user profile');
+        }
+
+        return data as UserProfile;
+    } catch (error) {
+        throw new Error(
+            error instanceof Error
+                ? error.message
+                : 'An unknown error occurred while fetching profile',
+        );
+    }
 };

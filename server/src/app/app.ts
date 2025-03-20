@@ -1,4 +1,5 @@
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { Express } from 'express';
 
@@ -24,6 +25,12 @@ export default class App {
     }
 
     private setupMiddlewares(): void {
+        this.app.use(
+            cors({
+                origin: 'http://localhost:5173',
+                credentials: true,
+            }),
+        );
         this.app.use(express.json());
         this.app.use(cookieParser());
         this.app.use(generalLimiter);

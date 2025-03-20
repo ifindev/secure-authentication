@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { useCallback } from 'react';
-import { LoginReq, LoginRes, login } from '../../../apis/auth.api';
+import authRepository, { LoginReq, LoginRes } from '../../../repositories/auth.repository';
 
 type UseLoginProps = {
     onError?: (err: Error) => void;
@@ -9,7 +9,7 @@ type UseLoginProps = {
 
 export default function useLogin({ onError, onSuccess }: UseLoginProps) {
     const { isPending, mutate, isError, error } = useMutation({
-        mutationFn: login,
+        mutationFn: authRepository.login,
         onSuccess: (data) => {
             onSuccess?.(data);
         },

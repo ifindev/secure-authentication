@@ -131,7 +131,6 @@ This implementation ensures:
 
 I'll expand the Routing System section with detailed explanations about the authentication and redirection mechanisms:
 
-```markdown:/Users/muhammad.arifin/Documents/side-projects/secure-auth/client/README.md
 ### Routing System
 
 #### Route Configuration

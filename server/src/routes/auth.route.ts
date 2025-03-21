@@ -6,6 +6,7 @@ import { loginLimiter, refreshLimiter } from '../middleware/rate-limiter.middlew
 const authRouter = express.Router();
 
 authRouter.post('/login', loginLimiter, AuthController.login);
+authRouter.post('/logout', AuthController.logout);
 authRouter.post('/refresh-token', refreshLimiter, AuthController.refreshAccessToken);
 
 export default authRouter;

@@ -66,4 +66,13 @@ export default class AuthController {
             next(error);
         }
     }
+
+    static async logout(req: Request, res: Response, next: NextFunction) {
+        try {
+            res.clearCookie(COOKIE_KEYS.refreshToken);
+            res.status(status.OK).json({ message: 'OK' });
+        } catch (error) {
+            next(error);
+        }
+    }
 }

@@ -1,49 +1,56 @@
-import { Link } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
+import { twMerge } from 'tailwind-merge';
 
-import loginRoute from '../login/login.route';
+import profileRoute from '../profile/profile.route';
 import useMainViewModel from './main.view-model';
 
 export default function MainView() {
-    const { accessToken, logout, handleRefreshToken, userProfile } = useMainViewModel();
+    const { logout, userProfile, pathname } = useMainViewModel();
 
     return (
         <main className="h-screen w-full">
-            <div className="flex flex-col items-center justify-center gap-2 w-full h-full">
+            <div className="flex flex-col max-w-sm mx-auto gap-2 pt-10 w-full h-full">
+                <button
+                    className={twMerge(
+                        'border border-gray-400 text-sm p-2 rounded text-center self-end',
+                        'disabled:bg-gray-100/50 disabled:text-gray-300 disabled:border-gray-200',
+                    )}
+                    type="button"
+                    onClick={logout.execute}
+                    disabled={logout.isPending}
+                >
+                    Logout
+                </button>
                 <p className="text-xl font-bold">
                     Welcome{userProfile.data && `, ${userProfile.data?.firstName}`}
                 </p>
-                {accessToken ? (
-                    <div className="flex gap-2 items-center">
-                        <button
-                            className="bg-green-700 text-white text-sm p-2 rounded text-center disabled:bg-green-700/50"
-                            type="button"
-                            onClick={logout.execute}
-                            disabled={logout.isPending}
-                        >
-                            Logout
-                        </button>
-                        <button
-                            className="bg-green-700 text-white text-sm p-2 rounded text-center disabled:bg-green-700/50"
-                            type="button"
-                            onClick={handleRefreshToken.execute}
-                            disabled={handleRefreshToken.isPending}
-                        >
-                            {handleRefreshToken.isPending ? 'Refreshing token' : 'Refresh Token'}
-                        </button>
-                        <button
-                            className="bg-green-700 text-white text-sm p-2 rounded text-center disabled:bg-green-700/50"
-                            type="button"
-                            onClick={() => userProfile.refetch()}
-                            disabled={userProfile.isLoading}
-                        >
-                            {userProfile.isLoading ? 'Refetching Profile' : 'Refetch Profile'}
-                        </button>
-                    </div>
-                ) : (
-                    <Link className="underline text-blue-600" to={loginRoute.path}>
-                        Login
-                    </Link>
-                )}
+                <nav>
+                    <ul className="flex gap-3">
+                        <li>
+                            <Link
+                                to="/"
+                                className={twMerge(
+                                    'underline',
+                                    pathname === '/' && 'text-blue-600',
+                                )}
+                            >
+                                Home
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
+                                to={profileRoute.path}
+                                className={twMerge(
+                                    'underline',
+                                    pathname === profileRoute.path && 'text-blue-600',
+                                )}
+                            >
+                                Profile
+                            </Link>
+                        </li>
+                    </ul>
+                </nav>
+                <Outlet />
             </div>
         </main>
     );

@@ -1,12 +1,22 @@
+import { useLocation } from 'react-router-dom';
 import { useSnapshot } from 'valtio';
 
+import useGetUserProfile from '../../hooks/use-get-user-profile.hook';
+import useRefreshToken from '../../hooks/use-refresh-token.hook';
+import useUnauthenticatedRedirection from '../../hooks/use-unauthenticated-redirection.hook';
 import authStore from '../../stores/auth.store';
 import userStore from '../../stores/user.store';
-import useGetUserProfile from './hooks/use-get-user-profile.hook';
 import useLogout from './hooks/use-logout.hook';
-import useRefreshToken from './hooks/use-refresh-token.hook';
 
 export default function useMainViewModel() {
+    // #region REDIRECT UNATHENTICATED
+    useUnauthenticatedRedirection();
+    // #endregion
+
+    // #region LOCATION
+    const { pathname } = useLocation();
+    // #endregion
+
     // #region USER
     const { user } = useSnapshot(userStore.state);
     // #endregion
@@ -36,5 +46,6 @@ export default function useMainViewModel() {
         logout,
         handleRefreshToken,
         userProfile,
+        pathname,
     };
 }

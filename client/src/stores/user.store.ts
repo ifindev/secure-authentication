@@ -1,4 +1,5 @@
 import { proxy } from 'valtio';
+
 import { UserProfile } from '../repositories/user.repository';
 
 // #region STATE TYPE

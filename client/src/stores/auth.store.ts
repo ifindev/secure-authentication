@@ -6,7 +6,7 @@ import { proxy } from 'valtio';
  */
 type AuthState = {
     accessToken: string | null;
-    isLoadingRefreshToken: boolean;
+    wasLoggedOut: boolean; // new flag
 };
 // #endregion
 
@@ -16,7 +16,7 @@ type AuthState = {
  */
 const initialState: AuthState = {
     accessToken: null,
-    isLoadingRefreshToken: false,
+    wasLoggedOut: false,
 };
 // #endregion
 
@@ -36,6 +36,7 @@ const actions = {
      */
     setToken: (token: string) => {
         state.accessToken = token;
+        state.wasLoggedOut = false;
     },
 
     /**
@@ -43,6 +44,7 @@ const actions = {
      */
     clearToken: () => {
         state.accessToken = null;
+        state.wasLoggedOut = true;
     },
 };
 // #endregion

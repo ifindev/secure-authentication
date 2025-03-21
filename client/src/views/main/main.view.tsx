@@ -13,17 +13,17 @@ export default function MainView() {
                     Welcome{userProfile.data && `, ${userProfile.data?.firstName}`}
                 </p>
                 {accessToken ? (
-                    // TODO: Add logout handler
                     <div className="flex gap-2 items-center">
                         <button
-                            className="bg-green-700 text-white text-sm p-2 rounded text-center"
+                            className="bg-green-700 text-white text-sm p-2 rounded text-center disabled:bg-green-700/50"
                             type="button"
-                            onClick={logout}
+                            onClick={logout.execute}
+                            disabled={logout.isPending}
                         >
                             Logout
                         </button>
                         <button
-                            className="bg-green-700 text-white text-sm p-2 rounded text-center"
+                            className="bg-green-700 text-white text-sm p-2 rounded text-center disabled:bg-green-700/50"
                             type="button"
                             onClick={handleRefreshToken.execute}
                             disabled={handleRefreshToken.isPending}
@@ -31,7 +31,7 @@ export default function MainView() {
                             {handleRefreshToken.isPending ? 'Refreshing token' : 'Refresh Token'}
                         </button>
                         <button
-                            className="bg-green-700 text-white text-sm p-2 rounded text-center"
+                            className="bg-green-700 text-white text-sm p-2 rounded text-center disabled:bg-green-700/50"
                             type="button"
                             onClick={() => userProfile.refetch()}
                             disabled={userProfile.isLoading}

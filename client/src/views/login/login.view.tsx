@@ -66,7 +66,8 @@ export default function LoginView() {
                         </div>
                     )}
                     <button
-                        className="bg-green-700 text-white text-sm p-2 rounded text-center"
+                        disabled={login.isPending}
+                        className="bg-green-700 text-white text-sm p-2 rounded text-center disabled:bg-green-700/50"
                         type="submit"
                     >
                         Login

@@ -3,6 +3,7 @@ import { useSnapshot } from 'valtio';
 import authStore from '../../stores/auth.store';
 import userStore from '../../stores/user.store';
 import useGetUserProfile from './hooks/use-get-user-profile.hook';
+import useLogout from './hooks/use-logout.hook';
 import useRefreshToken from './hooks/use-refresh-token.hook';
 
 export default function useMainViewModel() {
@@ -11,8 +12,14 @@ export default function useMainViewModel() {
     // #endregion
 
     // #region AUTH STORE
-    const { clearToken: logout } = authStore.actions;
+    const { clearToken } = authStore.actions;
     const { accessToken } = useSnapshot(authStore.state);
+    // #endregion
+
+    // #region LOGOUT
+    const logout = useLogout({
+        onSuccess: () => clearToken(),
+    });
     // #endregion
 
     // #region REFRESH TOKEN
@@ -20,7 +27,7 @@ export default function useMainViewModel() {
     // #endregion
 
     // #region GET USER PROFILE
-    const userProfile = useGetUserProfile()
+    const userProfile = useGetUserProfile();
     // #endregion
 
     return {
@@ -28,6 +35,6 @@ export default function useMainViewModel() {
         accessToken,
         logout,
         handleRefreshToken,
-        userProfile
+        userProfile,
     };
 }

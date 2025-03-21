@@ -95,15 +95,20 @@ sequenceDiagram
     participant Client
     participant Server
     participant Auth Service
+    participant Auth Repository
+    participant User Repository
     participant DB
 
     User->>Client: Enter credentials
     Client->>Server: POST /api/auth/login
     Server->>Auth Service: Validate credentials
-    Auth Service->>DB: Check user
-    DB-->>Auth Service: User data
+    Auth Service->>User Repository: Find user
+    User Repository->>DB: Query user
+    DB-->>User Repository: User data
+    User Repository-->>Auth Service: User entity
     Auth Service->>Auth Service: Generate tokens
-    Auth Service->>DB: Store refresh token
+    Auth Service->>Auth Repository: Store refresh token
+    Auth Repository->>DB: Save token
     Auth Service-->>Server: Tokens
     Server-->>Client: Access token (response)<br/>Refresh token (cookie)
 ```
@@ -119,12 +124,18 @@ sequenceDiagram
     participant Client
     participant Server
     participant Auth Service
+    participant User Repository
+    participant DB
 
     User->>Client: Access protected route
     Client->>Server: Request + Access Token
     Server->>Auth Service: Verify token
     alt Valid Token
-        Auth Service-->>Server: User ID
+        Auth Service->>User Repository: Get user by ID
+        User Repository->>DB: Query user
+        DB-->>User Repository: User data
+        User Repository-->>Auth Service: User entity
+        Auth Service-->>Server: User data
         Server-->>Client: Protected resource
     else Invalid/Expired Token
         Auth Service-->>Server: Error
@@ -146,14 +157,18 @@ sequenceDiagram
     participant Client
     participant Server
     participant Auth Service
+    participant Auth Repository
     participant DB
 
     Client->>Server: POST /api/auth/refresh-token
     Server->>Auth Service: Verify refresh token
-    Auth Service->>DB: Check token exists
-    DB-->>Auth Service: Token data
+    Auth Service->>Auth Repository: Find token
+    Auth Repository->>DB: Query token
+    DB-->>Auth Repository: Token data
+    Auth Repository-->>Auth Service: Token entity
     Auth Service->>Auth Service: Generate new tokens
-    Auth Service->>DB: Replace old token
+    Auth Service->>Auth Repository: Replace token
+    Auth Repository->>DB: Update token
     Auth Service-->>Server: New tokens
     Server-->>Client: New access token (response)<br/>New refresh token (cookie)
 ```
@@ -167,6 +182,7 @@ sequenceDiagram
     participant Rate Limiter
     participant Server
     participant Validator
+    participant Auth Repository
     participant Cookie Manager
 
     Client->>Rate Limiter: Request
@@ -174,6 +190,8 @@ sequenceDiagram
         Rate Limiter->>Server: Forward request
         Server->>Validator: Validate input
         alt Valid Input
+            Validator->>Auth Repository: Check token blacklist
+            Auth Repository-->>Validator: Token status
             Validator->>Cookie Manager: Set secure cookies
             Cookie Manager-->>Client: HTTP-only, Secure, SameSite
         else Invalid Input

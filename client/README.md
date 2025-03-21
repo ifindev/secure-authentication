@@ -1,6 +1,3 @@
-Based on the source code, I'll create a comprehensive README for the frontend client:
-
-```markdown:/Users/muhammad.arifin/Documents/side-projects/secure-auth/client/README.md
 # Secure Auth Client
 
 A React-based frontend application implementing secure authentication with JWT token rotation, built with TypeScript and Vite.

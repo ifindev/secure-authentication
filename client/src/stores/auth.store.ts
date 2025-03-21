@@ -34,14 +34,14 @@ const actions = {
      * Set access token on login
      * @param token Access token from API
      */
-    login: (token: string) => {
+    setToken: (token: string) => {
         state.accessToken = token;
     },
 
     /**
      * Clear access token on logout
      */
-    logout: () => {
+    clearToken: () => {
         state.accessToken = null;
     },
 };

@@ -40,7 +40,8 @@ export default class AuthController {
             const userId = await AuthService.verifyRefreshToken(oldRefreshToken);
 
             if (!userId) {
-                res.status(status.FORBIDDEN).json({
+                res.clearCookie(COOKIE_KEYS.refreshToken);
+                res.status(status.UNAUTHORIZED).json({
                     error: 'Invalid refresh token',
                 });
                 return;

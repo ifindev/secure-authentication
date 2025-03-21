@@ -1,4 +1,5 @@
-import envConfig from '../configs/env/env.config';
+import httpClient from '../clients/http/http.client';
+import { IHttpClient } from '../clients/http/http.client.interface';
 
 export type UserProfile = {
     id: string;
@@ -8,26 +9,15 @@ export type UserProfile = {
     lastName: string;
 };
 
-export const getUserProfile = async (accessToken: string): Promise<UserProfile> => {
-    try {
-        const response = await fetch(`${envConfig.apiUrl}/users/profile`, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-        });
+export function userRepositoryImpl(http: IHttpClient) {
+    const getProfile = async (): Promise<UserProfile> => {
+        return http.get<UserProfile>('users/profile');
+    };
 
-        const data = await response.json();
+    return {
+        getProfile,
+    };
+}
 
-        if (!response.ok) {
-            throw new Error(data.error || 'Failed fetching user profile');
-        }
-
-        return data as UserProfile;
-    } catch (error) {
-        throw new Error(
-            error instanceof Error
-                ? error.message
-                : 'An unknown error occurred while fetching profile',
-        );
-    }
-};
+const userRepository = userRepositoryImpl(httpClient);
+export default userRepository;

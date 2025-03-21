@@ -1,5 +1,5 @@
 import httpClient from '../clients/http/http.client';
-import IHttpClient from '../clients/http/http.client.interface';
+import { IAuthHttpClient } from '../clients/http/http.client.interface';
 
 export type LoginReq = {
     username: string;
@@ -13,22 +13,25 @@ export type RefreshTokenRes = {
     accessToken: string;
 };
 
-function creaAuthRepository(http: IHttpClient) {
+export function authRepositoryImpl(http: IAuthHttpClient) {
     const login = async (req: LoginReq): Promise<LoginRes> => {
         return http.post<LoginRes>('auth/login', req, { credentials: 'include' });
     };
 
     const refreshToken = async (): Promise<RefreshTokenRes> => {
-        return http.post<RefreshTokenRes>('auth/refresh', undefined, {
-            credentials: 'include',
-        });
+        return http.refreshToken();
+    };
+
+    const logout = async (): Promise<void> => {
+        return http.logout();
     };
 
     return {
         login,
+        logout,
         refreshToken,
     };
 }
 
-const authRepository = creaAuthRepository(httpClient);
+const authRepository = authRepositoryImpl(httpClient);
 export default authRepository;

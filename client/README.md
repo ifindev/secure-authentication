@@ -8,8 +8,7 @@ client/
 ├── src/
 │   ├── clients/
 │   │   └── http/              # HTTP client implementation
-│   ├── components/
-│   │   └── shared/            # Reusable components
+│   ├── components/            # Reusable components
 │   ├── configs/
 │   │   ├── env/              # Environment configurations
 │   │   └── routes/           # Route configurations

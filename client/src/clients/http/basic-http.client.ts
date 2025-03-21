@@ -1,4 +1,4 @@
-import IHttpClient from './http.client.interface';
+import { IHttpClient } from './http.client.interface';
 
 export interface BasicHttpClientConfig {
     baseUrl?: string;
@@ -14,14 +14,10 @@ export default class BasicHttpClient implements IHttpClient {
         this.baseUrl = '';
     }
 
-    getDefaultHeaders(): Record<string, string> {
+    protected getDefaultHeaders(): Record<string, string> {
         return {
             'Content-Type': 'application/json',
         };
-    }
-
-    handleError(error: unknown): never {
-        throw new Error(error instanceof Error ? error.message : 'An unknown error occurred');
     }
 
     private async handleResponse<T>(response: Response): Promise<T> {
@@ -37,7 +33,7 @@ export default class BasicHttpClient implements IHttpClient {
         return { ...this.getDefaultHeaders(), ...this.headers, ...headers };
     }
 
-    private async makeRequest<T>(url: string, config: RequestInit): Promise<T> {
+    protected async makeRequest<T>(url: string, config: RequestInit): Promise<T> {
         try {
             const headers = this.buildHeaders(config.headers as Record<string, string>);
             const requestOptions = {
@@ -51,15 +47,21 @@ export default class BasicHttpClient implements IHttpClient {
 
             const response = await fetch(`${this.baseUrl}${url}`, requestOptions);
 
-            if (!response.ok)
-                return this.handleError({
-                    ...(await response.json()),
-                    status: await response.status,
-                });
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw {
+                    ...errorData,
+                    status: response.status,
+                };
+            }
             return await this.handleResponse<T>(response);
         } catch (error) {
-            return this.handleError(error);
+            throw error;
         }
+    }
+
+    handleError(error: unknown): never {
+        throw new Error(error instanceof Error ? error.message : 'An unknown error occurred');
     }
 
     async get<T>(url: string, config?: RequestInit): Promise<T> {

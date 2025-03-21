@@ -48,6 +48,7 @@ export class HttpClient extends BasicHttpClient implements IAuthHttpClient {
         return this.post('auth/logout');
     }
 
+    // TODO: injects the deps from constructor later
     private clearStores(): void {
         authStore.actions.clearToken();
         userStore.actions.clearUser();

@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { useCallback } from 'react';
 
-import authRepository, { LoginRes } from '../../../repositories/auth.repository';
+import authRepository, { LoginRes } from '../repositories/auth.repository';
 
 type UseRefreshTokenProps = {
     onError?: (err: Error) => void;

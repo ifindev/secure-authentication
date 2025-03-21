@@ -1,9 +1,9 @@
 export default [
     {
-        ignores: ['node_modules', 'dist'], // ✅ Keep only necessary ignores
+        ignores: ['node_modules', 'dist'],
     },
     {
-        files: ['src/**/*.ts', 'src/**/*.tsx'], // ✅ Ensure ESLint runs on these files
+        files: ['src/**/*.ts', 'src/**/*.tsx'],
         languageOptions: {
             parser: (await import('@typescript-eslint/parser')).default,
             sourceType: 'module',
@@ -14,9 +14,9 @@ export default [
             'unused-imports': (await import('eslint-plugin-unused-imports')).default,
         },
         rules: {
+            ...(await import('eslint-config-prettier')).default.rules,
             '@typescript-eslint/no-unused-vars': 'off',
             'no-unused-vars': 'off',
-            'prettier/prettier': 'error',
             'simple-import-sort/exports': 'error',
             'simple-import-sort/imports': 'error',
             'unused-imports/no-unused-imports': 'error',

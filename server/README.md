@@ -89,16 +89,6 @@ server/
 
 The authentication flow describes the complete process of how users authenticate with the system, from initial login to accessing protected resources. It covers the entire lifecycle of authentication tokens, including generation, validation, and renewal through refresh token rotation. This flow ensures secure user sessions while maintaining a seamless user experience.
 
-<details>
-<summary>View detailed explanation</summary>
-
-- Login process with input validation
-- Token generation and storage
-- Cookie handling with security configurations
-- Protected route access control
-- Error handling for invalid credentials
-</details>
-
 ```mermaid
 sequenceDiagram
     actor User
@@ -122,15 +112,6 @@ sequenceDiagram
 
 Token management is a critical component of the authentication system that handles the lifecycle of both access and refresh tokens. It encompasses the generation, validation, storage, and rotation of tokens to maintain secure user sessions. The system uses JWTs (JSON Web Tokens) with different expiration times and storage strategies to balance security and user experience.
 
-<details>
-<summary>View detailed explanation</summary>
-
-- Access token: 15-minute JWT with user ID payload
-- Refresh token: 4-hour JWT stored in database
-- Token verification and validation process
-- HTTP-only cookie management
-- Authorization header handling
-</details>
 
 ```mermaid
 sequenceDiagram
@@ -160,17 +141,6 @@ Refresh token rotation is a security mechanism that enhances the authentication 
 3. Allows the system to detect potential token theft by tracking concurrent usage
 4. Reduces the window of opportunity for attackers to exploit compromised tokens
 
-
-<details>
-<summary>View detailed explanation</summary>
-
-- Single-use refresh tokens
-- Token replacement in database
-- Automatic invalidation
-- New token pair generation
-- Security measures against token theft
-</details>
-
 ```mermaid
 sequenceDiagram
     participant Client
@@ -191,15 +161,6 @@ sequenceDiagram
 ### Security Features
 The authentication server implements multiple layers of security measures to protect against common web vulnerabilities and attacks. These features work together to ensure secure user authentication, prevent unauthorized access, and maintain data integrity.
 
-<details>
-<summary>View detailed explanation</summary>
-
-- Rate limiting per endpoint
-- Input validation using Zod
-- Secure cookie configurations
-- CORS protection
-- Error handling strategies
-</details>
 ```mermaid
 sequenceDiagram
     participant Client

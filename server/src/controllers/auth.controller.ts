@@ -42,7 +42,7 @@ export default class AuthController {
             if (!userId) {
                 res.clearCookie(COOKIE_KEYS.refreshToken);
                 res.status(status.UNAUTHORIZED).json({
-                    error: 'Invalid refresh token',
+                    error: 'Invalid or expired refresh token',
                 });
                 return;
             }

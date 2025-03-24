@@ -1,6 +1,7 @@
-import { compareSync } from 'bcrypt';
+import bcrypt from 'bcrypt';
 import status from 'http-status';
 
+import SECURITY_CONSTANTS from '../constants/security.constant';
 import HttpError from '../errors/http.error';
 import { LoginRequest, LoginResponse, loginSchema } from '../models/auth.model';
 import AuthRepository from '../repositories/auth.repository';
@@ -13,14 +14,15 @@ export default class AuthService {
         const { username, password } = Validation.validate(loginSchema, request);
 
         const user = await UserRepository.findUserByUsername(username);
-        if (!user || !compareSync(password, user.password)) {
+        if (!user || !bcrypt.compareSync(password, user.password)) {
             throw new HttpError(status.UNAUTHORIZED, 'Invalid credentials');
         }
 
         const accessToken = JWT.generateAccessToken(user.id);
         const refreshToken = JWT.generateRefreshToken(user.id);
+        const refreshTokenHashed = await bcrypt.hash(refreshToken, SECURITY_CONSTANTS.SALT_ROUNDS);
 
-        await AuthRepository.storeRefreshToken(refreshToken, user.id);
+        await AuthRepository.storeRefreshToken(refreshTokenHashed, user.id);
 
         return {
             accessToken,
@@ -35,18 +37,33 @@ export default class AuthService {
     static async verifyRefreshToken(token: string): Promise<string | null> {
         try {
             const decoded = JWT.verifyRefreshToken(token);
-            const storedToken = await AuthRepository.findRefreshToken(token);
+            const storedToken = await AuthRepository.findRefreshTokenByUserId(decoded.userId);
 
-            return storedToken && storedToken.userId === decoded.userId ? decoded.userId : null;
+            return storedToken ? ((await bcrypt.compare(token, storedToken.token)) ? decoded.userId : null) : null;
         } catch (error) {
             return null;
         }
     }
 
     static async renewRefreshToken(oldToken: string, userId: string): Promise<string> {
-        const newRefreshToken = JWT.generateRefreshToken(userId);
-        await AuthRepository.replaceRefreshToken(oldToken, newRefreshToken, userId);
+        if (!oldToken || !userId) {
+            throw new Error('Invalid refresh token');
+        }
 
-        return newRefreshToken;
+        const verifiedUserId = await AuthService.verifyRefreshToken(oldToken);
+        if (!verifiedUserId || verifiedUserId !== userId) {
+            throw new Error('Invalid refresh token');
+        }
+
+        try {
+            const newRefreshToken = JWT.generateRefreshToken(userId);
+            const newRefreshTokenHashed = await bcrypt.hash(newRefreshToken, SECURITY_CONSTANTS.SALT_ROUNDS);
+
+            await AuthRepository.replaceRefreshToken(newRefreshTokenHashed, userId);
+
+            return newRefreshToken;
+        } catch (error) {
+            throw new Error('Failed to renew refresh token');
+        }
     }
 }

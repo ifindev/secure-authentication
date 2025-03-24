@@ -1,0 +1,5 @@
+const SECURITY_CONSTANTS = {
+    SALT_ROUNDS: 10,
+};
+
+export default SECURITY_CONSTANTS;

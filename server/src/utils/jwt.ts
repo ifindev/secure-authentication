@@ -5,7 +5,7 @@ import configs from './configs';
 
 export default class JWT {
     private static generateToken = (userId: string, secret: string, expiresIn: number | ms.StringValue) => {
-        return jwt.sign({ userId }, secret, { expiresIn });
+        return jwt.sign({ userId }, secret, { expiresIn, algorithm: 'HS256' });
     };
 
     private static verifyToken = (token: string, secret: string) => {

@@ -7,9 +7,15 @@ export default class AuthRepository {
         return new Date(Date.now() + expirationMs);
     }
 
-    static async findRefreshToken(token: string): Promise<RefreshToken | null> {
-        await delay(100); // Simulate 100ms database latency
-        return db.refreshTokens.find((rt) => rt.token === token) || null;
+    static async findRefreshTokenByUserId(userId: string): Promise<RefreshToken | null> {
+        // Simulate 100ms database latency
+        await delay(100);
+
+        const storedToken = db.refreshTokens.find((rt) => {
+            return rt.userId === userId;
+        });
+
+        return storedToken || null;
     }
 
     static async storeRefreshToken(token: string, userId: string): Promise<void> {
@@ -22,18 +28,21 @@ export default class AuthRepository {
         });
     }
 
-    static async replaceRefreshToken(oldToken: string, newToken: string, userId: string): Promise<void> {
+    static async replaceRefreshToken(newHashedToken: string, userId: string): Promise<void> {
         await delay(100);
 
-        const index = db.refreshTokens.findIndex((rt) => rt.token === oldToken);
+        const index = db.refreshTokens.findIndex((rt) => {
+            return rt.userId === userId;
+        });
+
         if (index === -1) {
-            console.warn(`Token not found for replacement: ${oldToken}`);
-            return;
+            throw new Error('Token not found');
         }
 
         db.refreshTokens.splice(index, 1);
+
         db.refreshTokens.push({
-            token: newToken,
+            token: newHashedToken,
             userId,
             expiresAt: AuthRepository.generateExpirationDate(),
         });

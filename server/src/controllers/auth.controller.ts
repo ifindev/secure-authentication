@@ -32,7 +32,7 @@ export default class AuthController {
             const oldRefreshToken = req.cookies.refreshToken;
             if (!oldRefreshToken) {
                 res.status(status.UNAUTHORIZED).json({
-                    error: 'No refresh token',
+                    error: 'Invalid or expired refresh token',
                 });
                 return;
             }
@@ -67,6 +67,7 @@ export default class AuthController {
         }
     }
 
+    // TODO: revoke this refresh token from database
     static async logout(req: Request, res: Response, next: NextFunction) {
         try {
             res.clearCookie(COOKIE_KEYS.refreshToken);

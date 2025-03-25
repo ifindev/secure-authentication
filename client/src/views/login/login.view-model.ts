@@ -21,9 +21,16 @@ export default function useLoginViewModel() {
 
     // #region LOGIN ACTION
     const login = useLogin({
-        onSuccess: (res) => {
+        onSuccess: async (res) => {
             authStore.actions.setToken(res.accessToken);
-            navigate(mainRoute.path);
+            try {
+                await authStore.actions.persist(); // Await the async persist
+                navigate(mainRoute.path);
+            } catch (error) {
+                console.error('Failed to persist authentication state:', error);
+                // Handle persistence failure (optional)
+                // You might want to show an error message or retry
+            }
         },
     });
     // #endregion

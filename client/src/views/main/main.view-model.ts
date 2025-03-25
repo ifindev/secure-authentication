@@ -22,13 +22,15 @@ export default function useMainViewModel() {
     // #endregion
 
     // #region AUTH STORE
-    const { clearToken } = authStore.actions;
     const { accessToken } = useSnapshot(authStore.state);
     // #endregion
 
     // #region LOGOUT
     const logout = useLogout({
-        onSuccess: () => clearToken(),
+        onSuccess: () => {
+            authStore.actions.clearToken()    
+            authStore.actions.persist()
+        },
     });
     // #endregion
 

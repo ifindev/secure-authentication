@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSnapshot } from 'valtio';
 
@@ -6,26 +6,39 @@ import authStore from '../stores/auth.store';
 import loginRoute from '../views/login/login.route';
 
 export default function useUnauthenticatedRedirection() {
-    // #region GENERAL HOOKS
     const location = useLocation();
     const navigate = useNavigate();
-
-    // #endregion
-
-    // #region AUTH STORE
-    const { accessToken } = useSnapshot(authStore.state);
-    // #endregion
+    const { accessToken, isAuthenticated, hydrated } = useSnapshot(authStore.state);
+    const [isHydrating, setIsHydrating] = useState(true);
 
     useEffect(() => {
-        if (!accessToken) {
+        const hydrateAndCheckAuth = async () => {
+            try {
+                await authStore.actions.hydrate();
+            } catch (error) {
+                console.error('Hydration failed:', error);
+                // Ensure clean state if hydration fails
+                authStore.actions.clearToken();
+                await authStore.actions.persist();
+            } finally {
+                setIsHydrating(false);
+            }
+        };
+
+        hydrateAndCheckAuth();
+    }, []);
+
+    useEffect(() => {
+        if (!isHydrating && hydrated && !accessToken && !isAuthenticated) {
             navigate(loginRoute.path, {
                 replace: true,
                 state: { from: location },
             });
         }
-    }, [accessToken, navigate]);
+    }, [isHydrating, hydrated, accessToken, isAuthenticated, navigate, location]);
 
     return {
         isAuthenticated: !!accessToken,
+        isHydrating
     };
 }

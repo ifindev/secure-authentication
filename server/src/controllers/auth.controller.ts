@@ -4,7 +4,6 @@ import status from 'http-status';
 import COOKIE_KEYS from '../constants/cookie.constant';
 import { LoginRequest } from '../models/auth.model';
 import AuthService from '../services/auth.service';
-import configs from '../utils/configs';
 
 export default class AuthController {
     static async login(req: Request, res: Response, next: NextFunction) {
@@ -12,15 +11,16 @@ export default class AuthController {
             const request: LoginRequest = req.body as LoginRequest;
             const response = await AuthService.login(request);
 
-            res.cookie(COOKIE_KEYS.refreshToken, response.refreshToken, {
-                httpOnly: true,
-                secure: configs.nodeEnv === 'production',
-                sameSite: 'strict',
-                maxAge: configs.refreshTokenExpiration,
-            });
+            // res.cookie(COOKIE_KEYS.refreshToken, response.refreshToken, {
+            //     httpOnly: true,
+            //     secure: configs.nodeEnv === 'production',
+            //     sameSite: 'strict',
+            //     maxAge: configs.refreshTokenExpiration,
+            // });
 
             res.status(status.OK).json({
                 accessToken: response.accessToken,
+                refreshToken: response.refreshToken,
             });
         } catch (error) {
             next(error);
@@ -30,6 +30,7 @@ export default class AuthController {
     static async refreshAccessToken(req: Request, res: Response, next: NextFunction) {
         try {
             const oldRefreshToken = req.cookies.refreshToken;
+
             if (!oldRefreshToken) {
                 res.status(status.UNAUTHORIZED).json({
                     error: 'Invalid or expired refresh token',
@@ -52,15 +53,16 @@ export default class AuthController {
 
             const newAccessToken = AuthService.generateAccessToken(userId);
 
-            res.cookie(COOKIE_KEYS.refreshToken, newRefreshToken, {
-                httpOnly: true,
-                secure: configs.nodeEnv === 'production',
-                sameSite: 'strict',
-                maxAge: configs.refreshTokenExpiration,
-            });
+            // res.cookie(COOKIE_KEYS.refreshToken, newRefreshToken, {
+            //     httpOnly: true,
+            //     secure: configs.nodeEnv === 'production',
+            //     sameSite: 'strict',
+            //     maxAge: configs.refreshTokenExpiration,
+            // });
 
             res.status(status.OK).json({
                 accessToken: newAccessToken,
+                refreshToken: newRefreshToken,
             });
         } catch (error) {
             next(error);

@@ -29,7 +29,9 @@ export default class AuthController {
 
     static async refreshAccessToken(req: Request, res: Response, next: NextFunction) {
         try {
+            console.log('req.cookies', req.cookies);
             const oldRefreshToken = req.cookies.refreshToken;
+            console.log('oldRefreshToken', oldRefreshToken);
 
             if (!oldRefreshToken) {
                 res.status(status.UNAUTHORIZED).json({
